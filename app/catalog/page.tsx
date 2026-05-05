@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
+import Navbar from '@/components/Navbar'
+import ToastStack, { type Toast } from '@/components/ToastStack'
 
 interface Book {
   id: number
@@ -12,22 +14,7 @@ interface Book {
   available_copies: number
 }
 
-interface Toast {
-  id: number
-  message: string
-  type: 'success' | 'error'
-}
-
 const PAGE_SIZE = 8
-
-function decodeUsername(token: string): string {
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
-    return payload.username ?? ''
-  } catch {
-    return ''
-  }
-}
 
 export default function CatalogPage() {
   const router = useRouter()
@@ -40,8 +27,6 @@ export default function CatalogPage() {
   const [page, setPage] = useState(1)
   const [borrowingId, setBorrowingId] = useState<number | null>(null)
   const [toasts, setToasts] = useState<Toast[]>([])
-
-  const username = token ? decodeUsername(token) : ''
 
   function addToast(message: string, type: 'success' | 'error') {
     const id = Date.now()
@@ -99,11 +84,6 @@ export default function CatalogPage() {
     }
   }
 
-  function handleLogout() {
-    setToken(null)
-    router.push('/')
-  }
-
   const filtered = books.filter(b =>
     b.title.toLowerCase().includes(search.toLowerCase()) ||
     b.author.toLowerCase().includes(search.toLowerCase())
@@ -113,46 +93,9 @@ export default function CatalogPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-
-      {/* Navbar */}
-      <nav className="bg-white border-b border-gray-200 px-6 h-16 flex items-center justify-between sticky top-0 z-10">
-        <span className="text-sm font-bold tracking-widest text-gray-900 uppercase select-none">
-          BookLender
-        </span>
-        <div className="flex gap-1">
-          {[
-            { label: 'Catalog', href: '/catalog', active: true },
-            { label: 'My Loans', href: '/loans', active: false },
-          ].map(({ label, href, active }) => (
-            <button
-              key={label}
-              onClick={() => router.push(href)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                active
-                  ? 'bg-gray-100 text-gray-900'
-                  : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <div className="flex items-center gap-3">
-          {username && (
-            <span className="text-sm text-gray-500 font-medium">{username}</span>
-          )}
-          <button
-            onClick={handleLogout}
-            className="rounded-lg border border-gray-200 px-3.5 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition"
-          >
-            Logout
-          </button>
-        </div>
-      </nav>
+      <Navbar activeTab="catalog" />
 
       <main className="max-w-5xl mx-auto px-6 py-8">
-
-        {/* Page header + search */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
             <h1 className="text-lg font-semibold text-gray-900">Book Catalog</h1>
@@ -172,23 +115,19 @@ export default function CatalogPage() {
           </div>
         </div>
 
-        {/* Table card */}
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center h-52 text-sm text-gray-400">
               <svg className="animate-spin w-5 h-5 mr-2 text-gray-300" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
               </svg>
               Loading books…
             </div>
           ) : fetchError ? (
             <div className="flex flex-col items-center justify-center h-52 gap-3">
               <p className="text-sm text-red-500">{fetchError}</p>
-              <button
-                onClick={fetchBooks}
-                className="text-xs text-gray-500 underline underline-offset-2 hover:text-gray-700"
-              >
+              <button onClick={fetchBooks} className="text-xs text-gray-500 underline underline-offset-2 hover:text-gray-700">
                 Retry
               </button>
             </div>
@@ -244,7 +183,6 @@ export default function CatalogPage() {
                 </tbody>
               </table>
 
-              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-between px-5 py-3 border-t border-gray-100 bg-gray-50/40">
                   <span className="text-xs text-gray-400">
@@ -286,30 +224,7 @@ export default function CatalogPage() {
         </div>
       </main>
 
-      {/* Toast stack */}
-      <div className="fixed bottom-5 right-5 flex flex-col gap-2 z-50 pointer-events-none">
-        {toasts.map(t => (
-          <div
-            key={t.id}
-            className={`flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm shadow-lg border pointer-events-auto animate-in fade-in slide-in-from-bottom-2 ${
-              t.type === 'error'
-                ? 'bg-white border-red-200 text-red-700'
-                : 'bg-white border-green-200 text-green-700'
-            }`}
-          >
-            {t.type === 'error' ? (
-              <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
-              </svg>
-            ) : (
-              <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
-              </svg>
-            )}
-            {t.message}
-          </div>
-        ))}
-      </div>
+      <ToastStack toasts={toasts} />
     </div>
   )
 }
