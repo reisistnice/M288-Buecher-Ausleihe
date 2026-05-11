@@ -26,10 +26,10 @@ export default function ToastStack({ toasts }: ToastStackProps) {
       {toasts.map(t => (
         <div
           key={t.id}
-          className={`flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm shadow-lg border pointer-events-auto ${
+          className={`flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm shadow-lg border-0 border-l-[3px] pointer-events-auto dark:ring-1 dark:ring-white/[0.07] ${
             t.type === 'error'
-              ? 'bg-white dark:bg-gray-900 border-red-200 dark:border-red-800 text-red-700 dark:text-red-400'
-              : 'bg-white dark:bg-gray-900 border-green-200 dark:border-green-800 text-green-700 dark:text-green-400'
+              ? 'bg-white dark:bg-gray-900 border-red-500 text-red-700 dark:text-red-300'
+              : 'bg-white dark:bg-gray-900 border-emerald-500 text-green-700 dark:text-emerald-300'
           }`}
         >
           {t.type === 'error' ? <ErrorIcon /> : <SuccessIcon />}

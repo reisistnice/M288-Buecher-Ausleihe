@@ -71,10 +71,10 @@ export default function LoansPage() {
             <p className="text-sm text-gray-400 dark:text-gray-500 mt-0.5">Your currently borrowed books</p>
           </div>
           {!loading && !fetchError && (
-            <div className="flex items-center gap-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5">
+            <div className="flex items-center gap-2 bg-white dark:bg-indigo-500/10 border border-gray-200 dark:border-indigo-500/20 rounded-xl px-4 py-2.5">
               <span className="text-sm text-gray-500 dark:text-gray-400">Active loans</span>
-              <span className={`text-sm font-bold min-w-[1.5rem] text-center ${
-                loans.length > 0 ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'
+              <span className={`text-sm font-bold min-w-[1.5rem] text-center tabular-nums ${
+                loans.length > 0 ? 'text-gray-900 dark:text-indigo-300' : 'text-gray-400 dark:text-gray-600'
               }`}>
                 {loans.length}
               </span>
@@ -83,10 +83,10 @@ export default function LoansPage() {
         </div>
 
         {/* Table card */}
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/[0.08] rounded-xl overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center h-52 text-sm text-gray-400 dark:text-gray-500">
-              <svg className="animate-spin w-5 h-5 mr-2 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24">
+              <svg className="animate-spin w-5 h-5 mr-2 text-gray-300 dark:text-indigo-500/50" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
               </svg>
@@ -104,8 +104,8 @@ export default function LoansPage() {
             </div>
           ) : loans.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-52 gap-3 text-center px-6">
-              <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                <svg className="w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-indigo-500/10 flex items-center justify-center">
+                <svg className="w-5 h-5 text-gray-400 dark:text-indigo-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                     d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
@@ -116,7 +116,7 @@ export default function LoansPage() {
               </div>
               <button
                 onClick={() => router.push('/catalog')}
-                className="mt-1 rounded-lg bg-black dark:bg-white px-4 py-2 text-xs font-semibold text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition"
+                className="mt-1 rounded-lg bg-black dark:bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800 dark:hover:bg-indigo-500 transition"
               >
                 Browse Catalog
               </button>
@@ -124,24 +124,24 @@ export default function LoansPage() {
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50/70 dark:bg-gray-800/50">
-                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Title</th>
-                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Borrowed On</th>
+                <tr className="border-b border-gray-200 dark:border-white/[0.07] bg-gray-50/70 dark:bg-gray-800">
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Title</th>
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Borrowed On</th>
                   <th className="px-5 py-3.5" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <tbody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                 {loans.map(loan => {
                   const returning = returningId === loan.id
                   return (
-                    <tr key={loan.id} className="hover:bg-gray-50/60 dark:hover:bg-gray-800/40 transition">
+                    <tr key={loan.id} className="hover:bg-gray-50/60 dark:hover:bg-white/[0.03] transition">
                       <td className="px-5 py-4 font-medium text-gray-900 dark:text-white">{loan.bookTitle}</td>
                       <td className="px-5 py-4 text-gray-500 dark:text-gray-400">{formatDate(loan.loanDate)}</td>
                       <td className="px-5 py-4 text-right">
                         <button
                           onClick={() => handleReturn(loan.id)}
                           disabled={returning}
-                          className="rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition min-w-[80px]"
+                          className="rounded-lg border border-gray-300 dark:border-white/[0.12] px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-400 hover:border-gray-400 dark:hover:border-indigo-500/50 hover:bg-gray-50 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition min-w-[80px]"
                         >
                           {returning ? 'Returning…' : 'RETURN'}
                         </button>

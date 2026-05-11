@@ -54,11 +54,11 @@ export default function Navbar({ activeTab }: NavbarProps) {
   }
 
   return (
-    <aside className="w-64 min-h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col shrink-0">
+    <aside className="w-64 min-h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-white/[0.07] flex flex-col shrink-0">
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-gray-100 dark:border-gray-700">
+      <div className="px-5 py-5 border-b border-gray-100 dark:border-white/[0.07]">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 bg-gray-900 dark:bg-gray-700 rounded-lg flex items-center justify-center shrink-0">
+          <div className="w-7 h-7 bg-gray-900 dark:bg-indigo-600 rounded-lg flex items-center justify-center shrink-0">
             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -76,8 +76,8 @@ export default function Navbar({ activeTab }: NavbarProps) {
             onClick={() => router.push(href)}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left ${
               activeTab === key
-                ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
-                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200'
+                ? 'bg-gray-100 dark:bg-indigo-500/15 text-gray-900 dark:text-indigo-300'
+                : 'text-gray-500 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-white/[0.04] hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
             {icon}
@@ -87,11 +87,11 @@ export default function Navbar({ activeTab }: NavbarProps) {
       </nav>
 
       {/* User info */}
-      <div className="px-3 py-4 border-t border-gray-100 dark:border-gray-700" ref={ref}>
+      <div className="px-3 py-4 border-t border-gray-100 dark:border-white/[0.07]" ref={ref}>
         <div className="relative">
           {/* Popover */}
           {open && (
-            <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg p-3 space-y-3">
+            <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-white/[0.08] rounded-xl shadow-lg dark:shadow-2xl dark:shadow-black/60 p-3 space-y-3">
               {email && (
                 <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 truncate">
                   <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,7 +103,7 @@ export default function Navbar({ activeTab }: NavbarProps) {
               )}
               <button
                 onClick={toggleDarkMode}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors text-sm font-medium text-gray-700 dark:text-gray-200"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 dark:bg-white/[0.05] hover:bg-gray-100 dark:hover:bg-white/[0.08] transition-colors text-sm font-medium text-gray-700 dark:text-gray-200"
               >
                 <span className="flex items-center gap-2">
                   {darkMode ? (
@@ -119,8 +119,8 @@ export default function Navbar({ activeTab }: NavbarProps) {
                   )}
                   {darkMode ? 'Light mode' : 'Dark mode'}
                 </span>
-                <div className={`w-8 h-4 rounded-full transition-colors ${darkMode ? 'bg-gray-900 dark:bg-white' : 'bg-gray-300'}`}>
-                  <div className={`w-3 h-3 rounded-full bg-white dark:bg-gray-900 mt-0.5 transition-transform ${darkMode ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                <div className={`w-8 h-4 rounded-full transition-colors ${darkMode ? 'bg-gray-900 dark:bg-indigo-500' : 'bg-gray-300'}`}>
+                  <div className={`w-3 h-3 rounded-full bg-white mt-0.5 transition-transform ${darkMode ? 'translate-x-4' : 'translate-x-0.5'}`} />
                 </div>
               </button>
               <button
@@ -139,10 +139,10 @@ export default function Navbar({ activeTab }: NavbarProps) {
           {/* Trigger button */}
           <button
             onClick={() => setOpen(v => !v)}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-left"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-gray-50 dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.07] hover:bg-gray-100 dark:hover:bg-white/[0.07] transition-colors text-left"
           >
-            <div className="w-7 h-7 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center shrink-0">
-              <span className="text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase">
+            <div className="w-7 h-7 rounded-full bg-gray-200 dark:bg-indigo-500/20 flex items-center justify-center shrink-0">
+              <span className="text-xs font-semibold text-gray-700 dark:text-indigo-300 uppercase">
                 {username ? username[0] : '?'}
               </span>
             </div>

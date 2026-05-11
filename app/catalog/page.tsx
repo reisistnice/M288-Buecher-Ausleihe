@@ -106,15 +106,15 @@ export default function CatalogPage() {
               placeholder="Search by title or author…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-72 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 pl-9 pr-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none transition focus:border-gray-900 dark:focus:border-gray-400 focus:ring-2 focus:ring-gray-900/10 dark:focus:ring-gray-400/10"
+              className="w-72 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 pl-9 pr-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 outline-none transition focus:border-gray-900 dark:focus:border-indigo-500 focus:ring-2 focus:ring-gray-900/10 dark:focus:ring-indigo-500/20"
             />
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/[0.08] rounded-xl overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center h-52 text-sm text-gray-400 dark:text-gray-500">
-              <svg className="animate-spin w-5 h-5 mr-2 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24">
+              <svg className="animate-spin w-5 h-5 mr-2 text-gray-300 dark:text-indigo-500/50" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
               </svg>
@@ -131,14 +131,14 @@ export default function CatalogPage() {
             <>
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50/70 dark:bg-gray-800/50">
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Title</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Author</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Available</th>
+                  <tr className="border-b border-gray-200 dark:border-white/[0.07] bg-gray-50/70 dark:bg-gray-800">
+                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Title</th>
+                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Author</th>
+                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Available</th>
                     <th className="px-5 py-3.5" />
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                <tbody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                   {paginated.length === 0 ? (
                     <tr>
                       <td colSpan={4} className="text-center py-14 text-sm text-gray-400 dark:text-gray-500">
@@ -150,11 +150,11 @@ export default function CatalogPage() {
                       const avail = Math.min(book.availableCopies, book.totalCopies) > 0
                       const borrowing = borrowingId === book.id
                       return (
-                        <tr key={book.id} className="hover:bg-gray-50/60 dark:hover:bg-gray-800/40 transition">
+                        <tr key={book.id} className="hover:bg-gray-50/60 dark:hover:bg-white/[0.03] transition">
                           <td className="px-5 py-4 font-medium text-gray-900 dark:text-white">{book.title}</td>
                           <td className="px-5 py-4 text-gray-500 dark:text-gray-400">{book.author}</td>
                           <td className="px-5 py-4">
-                            <span className={`text-sm font-medium ${avail ? 'text-gray-700 dark:text-gray-300' : 'text-red-500'}`}>
+                            <span className={`text-sm font-medium tabular-nums ${avail ? 'text-gray-700 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
                               {Math.min(book.availableCopies, book.totalCopies)}/{book.totalCopies}
                             </span>
                           </td>
@@ -164,8 +164,8 @@ export default function CatalogPage() {
                               disabled={!avail || borrowing}
                               className={`rounded-lg px-4 py-2 text-xs font-semibold transition min-w-[80px] ${
                                 avail
-                                  ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 active:scale-95'
-                                  : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                                  ? 'bg-black dark:bg-indigo-600 text-white hover:bg-gray-800 dark:hover:bg-indigo-500 active:scale-95'
+                                  : 'bg-gray-100 dark:bg-gray-800/60 text-gray-400 dark:text-gray-600 cursor-not-allowed'
                               } disabled:opacity-60`}
                             >
                               {borrowing ? 'Borrowing…' : 'BORROW'}
@@ -179,7 +179,7 @@ export default function CatalogPage() {
               </table>
 
               {totalPages > 1 && (
-                <div className="flex items-center justify-between px-5 py-3 border-t border-gray-100 dark:border-gray-800 bg-gray-50/40 dark:bg-gray-800/30">
+                <div className="flex items-center justify-between px-5 py-3 border-t border-gray-100 dark:border-white/[0.06]">
                   <span className="text-xs text-gray-400 dark:text-gray-500">
                     {filtered.length} book{filtered.length !== 1 ? 's' : ''}
                   </span>
@@ -187,7 +187,7 @@ export default function CatalogPage() {
                     <button
                       onClick={() => setPage(p => Math.max(1, p - 1))}
                       disabled={page === 1}
-                      className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/[0.1] hover:bg-white dark:hover:bg-white/[0.05] disabled:opacity-30 disabled:cursor-not-allowed transition"
                     >
                       ← Prev
                     </button>
@@ -197,8 +197,8 @@ export default function CatalogPage() {
                         onClick={() => setPage(n)}
                         className={`w-8 h-8 rounded-lg text-xs font-medium border transition ${
                           n === page
-                            ? 'bg-black dark:bg-white text-white dark:text-black border-black dark:border-white'
-                            : 'text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-700'
+                            ? 'bg-black dark:bg-indigo-600 text-white border-black dark:border-indigo-600'
+                            : 'text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/[0.1] hover:bg-white dark:hover:bg-white/[0.05]'
                         }`}
                       >
                         {n}
@@ -207,7 +207,7 @@ export default function CatalogPage() {
                     <button
                       onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                       disabled={page === totalPages}
-                      className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/[0.1] hover:bg-white dark:hover:bg-white/[0.05] disabled:opacity-30 disabled:cursor-not-allowed transition"
                     >
                       Next →
                     </button>
