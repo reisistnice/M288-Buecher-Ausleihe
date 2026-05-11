@@ -10,7 +10,7 @@ import ToastStack, { type Toast } from '@/components/ToastStack'
 
 export default function LoansPage() {
   const router = useRouter()
-  const { token, setToken } = useAuth()
+  const { username, token, setUsername } = useAuth()
 
   const [loans, setLoans] = useState<Loan[]>([])
   const [loading, setLoading] = useState(true)
@@ -25,13 +25,13 @@ export default function LoansPage() {
   }
 
   async function fetchLoans() {
-    if (!token) return
+    if (!username) return
     setLoading(true)
     setFetchError(null)
     try {
-      setLoans(await LoanService.fetchMyLoans(token))
+      setLoans(await LoanService.fetchMyLoans())
     } catch (e: any) {
-      if (e.message === 'UNAUTHORIZED') { setToken(null); router.push('/'); return }
+      if (e.message === 'UNAUTHORIZED') { setUsername(null); router.push('/'); return }
       setFetchError(e.message)
     } finally {
       setLoading(false)
@@ -39,19 +39,19 @@ export default function LoansPage() {
   }
 
   useEffect(() => {
-    if (!token) { router.push('/'); return }
+    if (!username) { router.push('/'); return }
     fetchLoans()
-  }, [token]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [username]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleReturn(loanId: number) {
-    if (!token) return
+    if (!username) return
     setReturningId(loanId)
     try {
       await LoanService.returnLoan(loanId, token)
       setLoans(prev => prev.filter(l => l.id !== loanId))
       addToast('Book returned', 'success')
     } catch (e: any) {
-      if (e.message === 'UNAUTHORIZED') { setToken(null); router.push('/'); return }
+      if (e.message === 'UNAUTHORIZED') { setUsername(null); router.push('/'); return }
       addToast(e.message, 'error')
     } finally {
       setReturningId(null)
@@ -59,10 +59,10 @@ export default function LoansPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50">
       <Navbar activeTab="loans" />
 
-      <main className="max-w-5xl mx-auto px-6 py-8">
+      <main className="flex-1 px-6 py-8 overflow-auto">
 
         {/* Page header with loan count badge */}
         <div className="flex items-start justify-between mb-6">
@@ -126,7 +126,6 @@ export default function LoansPage() {
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50/70">
                   <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Title</th>
-                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">ISBN</th>
                   <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Borrowed On</th>
                   <th className="px-5 py-3.5" />
                 </tr>
@@ -137,8 +136,7 @@ export default function LoansPage() {
                   return (
                     <tr key={loan.id} className="hover:bg-gray-50/60 transition">
                       <td className="px-5 py-4 font-medium text-gray-900">{loan.bookTitle}</td>
-                      <td className="px-5 py-4 text-gray-400 font-mono text-xs">{loan.isbn}</td>
-                      <td className="px-5 py-4 text-gray-500">{formatDate(loan.borrowedAt)}</td>
+                      <td className="px-5 py-4 text-gray-500">{formatDate(loan.loanDate)}</td>
                       <td className="px-5 py-4 text-right">
                         <button
                           onClick={() => handleReturn(loan.id)}

@@ -1,28 +1,21 @@
 export interface Loan {
   id: number
   bookTitle: string
-  isbn: string
-  borrowedAt: string
+  loanDate: string
 }
 
 export class LoanService {
-  private static authHeader(token: string) {
-    return { Authorization: `Bearer ${token}` }
-  }
-
-  static async fetchMyLoans(token: string): Promise<Loan[]> {
-    const res = await fetch('/api/loans/me', {
-      headers: this.authHeader(token),
-    })
+  static async fetchMyLoans(): Promise<Loan[]> {
+    const res = await fetch('/api/loans/me')
     if (res.status === 401) throw new Error('UNAUTHORIZED')
     if (!res.ok) throw new Error('Failed to load loans')
     return res.json()
   }
 
-  static async returnLoan(loanId: number, token: string): Promise<void> {
+  static async returnLoan(loanId: number, token?: string | null): Promise<void> {
     const res = await fetch(`/api/loans/${loanId}/return`, {
       method: 'PUT',
-      headers: this.authHeader(token),
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
     })
     if (res.status === 401) throw new Error('UNAUTHORIZED')
     if (!res.ok) {

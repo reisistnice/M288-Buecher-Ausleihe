@@ -1,6 +1,12 @@
-import { NextResponse } from 'next/server'
-import { MockDb } from '@/lib/mock-db'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET() {
-  return NextResponse.json(MockDb.getBooks())
+const BACKEND = process.env.BACKEND_URL ?? 'http://localhost:5068'
+
+export async function GET(req: NextRequest) {
+  const token = req.cookies.get('token')?.value
+  const res = await fetch(`${BACKEND}/api/books`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  })
+  const data = await res.json()
+  return NextResponse.json(data, { status: res.status })
 }

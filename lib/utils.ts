@@ -1,7 +1,13 @@
 export function decodeUsername(token: string): string {
   try {
     const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
-    return payload.username ?? ''
+    return (
+      payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] ??
+      payload.unique_name ??
+      payload.name ??
+      payload.username ??
+      ''
+    )
   } catch {
     return ''
   }
@@ -10,7 +16,12 @@ export function decodeUsername(token: string): string {
 export function decodeUserId(token: string): number | null {
   try {
     const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
-    return payload.userId ?? null
+    const raw =
+      payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/serialnumber'] ??
+      payload.userId ??
+      payload.sub ??
+      null
+    return raw !== null ? Number(raw) : null
   } catch {
     return null
   }

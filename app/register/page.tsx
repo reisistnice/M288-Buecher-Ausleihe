@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter()
-  const { setUsername, setToken } = useAuth()
+  const { setUsername } = useAuth()
 
   const [username, setUsernameInput] = useState('')
   const [password, setPassword] = useState('')
@@ -20,7 +20,7 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -28,13 +28,17 @@ export default function LoginPage() {
 
       const data = await res.json()
 
+      if (res.status === 409) {
+        setError('Username already taken.')
+        return
+      }
+
       if (!res.ok) {
-        setError(data.message ?? 'Invalid credentials')
+        setError(data.message ?? 'Registration failed.')
         return
       }
 
       setUsername(data.username)
-      setToken(data.token)
       router.push('/catalog')
     } catch {
       setError('Network error. Please try again.')
@@ -47,7 +51,6 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm">
 
-        {/* Logo / brand */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-12 h-12 bg-black rounded-xl mb-4">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,13 +59,11 @@ export default function LoginPage() {
             </svg>
           </div>
           <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">BookLender</h1>
-          <p className="mt-1 text-sm text-gray-500">Sign in to your account</p>
+          <p className="mt-1 text-sm text-gray-500">Create an account</p>
         </div>
 
-        {/* Card */}
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm px-8 py-8">
 
-          {/* Error alert */}
           {error && (
             <div className="mb-5 flex items-start gap-3 bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">
               <svg className="w-4 h-4 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -73,7 +74,6 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Username */}
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1.5">
                 Username
@@ -85,13 +85,12 @@ export default function LoginPage() {
                 required
                 value={username}
                 onChange={e => setUsernameInput(e.target.value)}
-                placeholder="Enter your username"
+                placeholder="Choose a username"
                 className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 shadow-xs outline-none transition focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 disabled:opacity-50"
                 disabled={loading}
               />
             </div>
 
-            {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
                 Password
@@ -99,37 +98,34 @@ export default function LoginPage() {
               <input
                 id="password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete="new-password"
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                placeholder="Choose a password"
                 className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 shadow-xs outline-none transition focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10 disabled:opacity-50"
                 disabled={loading}
               />
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
               className="w-full rounded-lg bg-black px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-gray-800 active:bg-gray-900 disabled:opacity-60 disabled:cursor-not-allowed mt-1"
             >
-              {loading ? 'Signing in…' : 'LOGIN'}
+              {loading ? 'Registering…' : 'REGISTER'}
             </button>
           </form>
 
           <p className="mt-5 text-center text-sm text-gray-500">
-            No account?{' '}
-            <Link href="/register" className="font-medium text-gray-900 hover:underline">
-              Register
+            Already have an account?{' '}
+            <Link href="/" className="font-medium text-gray-900 hover:underline">
+              Sign in
             </Link>
           </p>
         </div>
 
-        {/* Image / logo placeholder */}
         <div className="mt-8 flex flex-col items-center gap-2">
-
           <p className="text-xs text-gray-400">Modul 223 — Bücherausleihe LB · INF23a</p>
         </div>
 

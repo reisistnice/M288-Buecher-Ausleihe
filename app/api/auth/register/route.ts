@@ -5,7 +5,7 @@ const BACKEND = process.env.BACKEND_URL ?? 'http://localhost:5068'
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  const res = await fetch(`${BACKEND}/api/auth/login`, {
+  const res = await fetch(`${BACKEND}/api/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   const data = await res.json()
   if (!res.ok) return NextResponse.json(data, { status: res.status })
 
-  const response = NextResponse.json({ username: decodeUsername(data.token), token: data.token })
+  const response = NextResponse.json({ username: decodeUsername(data.token) })
   response.cookies.set('token', data.token, {
     httpOnly: true,
     sameSite: 'lax',

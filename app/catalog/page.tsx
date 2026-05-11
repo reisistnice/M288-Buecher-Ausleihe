@@ -10,15 +10,16 @@ interface Book {
   id: number
   title: string
   author: string
-  total_copies: number
-  available_copies: number
+  isbn: string
+  availableCopies: number
+  totalCopies: number
 }
 
 const PAGE_SIZE = 8
 
 export default function CatalogPage() {
   const router = useRouter()
-  const { token, setToken } = useAuth()
+  const { username, setUsername } = useAuth()
 
   const [books, setBooks] = useState<Book[]>([])
   const [loading, setLoading] = useState(true)
@@ -38,10 +39,8 @@ export default function CatalogPage() {
     setLoading(true)
     setFetchError(null)
     try {
-      const res = await fetch('/api/books', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      if (res.status === 401) { setToken(null); router.push('/'); return }
+      const res = await fetch('/api/books')
+      if (res.status === 401) { setUsername(null); router.push('/'); return }
       if (!res.ok) throw new Error('Failed to load books')
       setBooks(await res.json())
     } catch (e: any) {
@@ -52,9 +51,9 @@ export default function CatalogPage() {
   }
 
   useEffect(() => {
-    if (!token) { router.push('/'); return }
+    if (!username) { router.push('/'); return }
     fetchBooks()
-  }, [token]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [username]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => { setPage(1) }, [search])
 
@@ -63,10 +62,7 @@ export default function CatalogPage() {
     try {
       const res = await fetch('/api/loans', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ bookId }),
       })
       if (res.status === 409) { addToast('No copies available', 'error'); return }
@@ -92,10 +88,10 @@ export default function CatalogPage() {
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50">
       <Navbar activeTab="catalog" />
 
-      <main className="max-w-5xl mx-auto px-6 py-8">
+      <main className="flex-1 px-6 py-8 overflow-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
             <h1 className="text-lg font-semibold text-gray-900">Book Catalog</h1>
@@ -151,7 +147,7 @@ export default function CatalogPage() {
                     </tr>
                   ) : (
                     paginated.map(book => {
-                      const avail = book.available_copies > 0
+                      const avail = book.availableCopies > 0
                       const borrowing = borrowingId === book.id
                       return (
                         <tr key={book.id} className="hover:bg-gray-50/60 transition">
@@ -159,8 +155,7 @@ export default function CatalogPage() {
                           <td className="px-5 py-4 text-gray-500">{book.author}</td>
                           <td className="px-5 py-4">
                             <span className={`text-sm font-medium ${avail ? 'text-gray-700' : 'text-red-500'}`}>
-                              {book.available_copies}
-                              <span className="text-gray-400 font-normal"> / {book.total_copies}</span>
+                              {book.availableCopies}/{book.totalCopies}
                             </span>
                           </td>
                           <td className="px-5 py-4 text-right">
