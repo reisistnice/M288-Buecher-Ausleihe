@@ -13,6 +13,19 @@ export function decodeUsername(token: string): string {
   }
 }
 
+export function decodeEmail(token: string): string {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
+    return (
+      payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] ??
+      payload.email ??
+      ''
+    )
+  } catch {
+    return ''
+  }
+}
+
 export function decodeUserId(token: string): number | null {
   try {
     const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
