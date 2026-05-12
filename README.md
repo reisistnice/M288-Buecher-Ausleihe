@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BookLender — Frontend
 
-## Getting Started
+Next.js 14 frontend for the Bücher-Ausleihe app.
 
-First, run the development server:
+## Prerequisites
+
+- Node.js 18+
+- C# ASP.NET Core backend running on `localhost:5068`
+- MS SQL Server running (via Docker)
+
+## Install
+
+```bash
+npm install
+```
+
+## Start Dev Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+App runs at `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Backend Connection
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`next.config.mjs` proxies all `/api/*` requests to the C# backend:
 
-## Learn More
+```
+Frontend (localhost:3000) → /api/* → Backend (localhost:5068/api/*)
+```
 
-To learn more about Next.js, take a look at the following resources:
+No extra config needed. Just make sure backend is running on port `5068`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Start Backend (Docker DB)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+docker-compose up -d
+```
 
-## Deploy on Vercel
+Starts MS SQL Server on `localhost:1433`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Then start C# API in Rider — it connects to the Docker DB.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+## Pages
+
+| Route      | Description           |
+|------------|-----------------------|
+| `/`        | Login                 |
+| `/catalog` | Browse & borrow books |
+| `/loans`   | My active loans       |
