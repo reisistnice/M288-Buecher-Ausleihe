@@ -10,7 +10,7 @@ import ToastStack, { type Toast } from '@/components/ToastStack'
 
 export default function LoansPage() {
   const router = useRouter()
-  const { username, token, setUsername } = useAuth()
+  const { username, setUsername } = useAuth()
 
   const [loans, setLoans] = useState<Loan[]>([])
   const [loading, setLoading] = useState(true)
@@ -47,7 +47,7 @@ export default function LoansPage() {
     if (!username) return
     setReturningId(loanId)
     try {
-      await LoanService.returnLoan(loanId, token)
+      await LoanService.returnLoan(loanId)
       setLoans(prev => prev.filter(l => l.id !== loanId))
       addToast('Book returned', 'success')
     } catch (e: any) {

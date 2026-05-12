@@ -4,8 +4,8 @@ const nextConfig = {
     return {
       afterFiles: [
         {
-          source: '/api/:path*',
-          destination: 'http://localhost:5068/api/:path*',
+          source: '/api/books/:path*',
+          destination: 'http://localhost:5068/api/books/:path*',
         },
       ],
     }

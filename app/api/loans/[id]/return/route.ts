@@ -7,12 +7,15 @@ export async function PUT(
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params
-  const authHeader = req.headers.get('authorization')
-  const res = await fetch(`${BACKEND}/api/loans/${id}/return`, {
+  const token = req.cookies.get('token')?.value
+const res = await fetch(`${BACKEND}/api/loans/${id}/return`, {
     method: 'PUT',
     cache: 'no-store',
-    headers: authHeader ? { Authorization: authHeader } : {},
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
   })
-  const data = await res.json()
-  return NextResponse.json(data, { status: res.status })
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}))
+    return NextResponse.json(data, { status: res.status })
+  }
+  return NextResponse.json({}, { status: res.status })
 }

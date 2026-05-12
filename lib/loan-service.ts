@@ -12,11 +12,8 @@ export class LoanService {
     return res.json()
   }
 
-  static async returnLoan(loanId: number, token?: string | null): Promise<void> {
-    const res = await fetch(`/api/loans/${loanId}/return`, {
-      method: 'PUT',
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    })
+  static async returnLoan(loanId: number): Promise<void> {
+    const res = await fetch(`/api/loans/${loanId}/return`, { method: 'PUT' })
     if (res.status === 401) throw new Error('UNAUTHORIZED')
     if (!res.ok) {
       const d = await res.json().catch(() => ({}))
