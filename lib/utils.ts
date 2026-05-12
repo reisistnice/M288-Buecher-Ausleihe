@@ -40,6 +40,15 @@ export function decodeUserId(token: string): number | null {
   }
 }
 
+export function decodeExpiry(token: string): Date | null {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
+    return payload.exp ? new Date(payload.exp * 1000) : null
+  } catch {
+    return null
+  }
+}
+
 export function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', {
     day: '2-digit',
